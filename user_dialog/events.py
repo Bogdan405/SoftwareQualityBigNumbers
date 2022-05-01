@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from big_numbers.big_number import BigNumber
+from parsing.postfix_expression import PostfixExpression
 
 
 def help():
@@ -10,7 +12,17 @@ def automatic():
 
 
 def interactive():
-    pass
+    expression = input('Enter infix expression ')
+
+    print('infix notation: ', expression)
+
+    expr = PostfixExpression(expression)
+
+    for x in expr.expression_stack:
+        if type(x) is BigNumber:
+            print("element is: ", x.big_number)
+        else:
+            print("element op", x)
 
 
 def modify_number_size():
