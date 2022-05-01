@@ -24,3 +24,10 @@ class BigNumber:
     @staticmethod
     def is_valid_big_number_string(big_number_string: str):
         pass
+
+    class NegativeResult(ValueError):
+        pass
+
+    class InvalidCharInNumberString(ValueError):
+        pass
+    
