@@ -16,6 +16,9 @@ def mainloop():
             case "number_size":
                 events.modify_number_size()
 
+            case "verbosity":
+                events.modify_verbosity()
+
             case "quit":
                 break
 

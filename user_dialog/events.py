@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from big_numbers.big_number import BigNumber
 from parsing.postfix_expression import PostfixExpression
 
@@ -27,3 +26,6 @@ def interactive():
 
 def modify_number_size():
     pass
+
+
+def modify_verbosity()

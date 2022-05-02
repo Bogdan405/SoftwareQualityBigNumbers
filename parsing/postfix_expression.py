@@ -13,19 +13,22 @@ class PostfixExpression:
     operator_mapping = {'+': BigNumber.__add__, '-': BigNumber.__sub__, '*': BigNumber.__mul__,
                         '/': BigNumber.__truediv__, '^': BigNumber.__pow__, '#': BigNumber.root}
     max_number_size = 5
+    full_verbosity = False
 
     def __init__(self, expression_string: str):
         self.expression_string = expression_string
         self.result = None
         self.post_fixed_expression = []
+        self.solve_output_history = []
         self.init_expression()
 
     def solve(self):
-        print(f"Analyzing expression {self.expression_string}:")
+        self.solve_output_history = []
+        self.solve_output_history.append(f"Analyzing expression {self.expression_string}:")
         number_stack = []
         current_expression = self.restore_post_fixed_to_string(copy.deepcopy(number_stack), 0)
-        print(f"Transformed expression to {current_expression}")
-        print(f"Now solving: {current_expression}")
+        self.solve_output_history.append(f"Transformed expression to {current_expression}")
+        self.solve_output_history.append(f"Now solving: {current_expression}")
 
         for index, item in enumerate(self.post_fixed_expression):
 
@@ -36,11 +39,22 @@ class PostfixExpression:
                 result = operator(number1, number2)
                 number_stack.append(result)
                 current_expression = self.restore_post_fixed_to_string(copy.deepcopy(number_stack), index + 1)
-                print(f"Solving atomic operation: {number1} {item} {number2}: {result}\n")
-                print(f"Now solving: {current_expression}")
+                self.solve_output_history.append(f"Solving atomic operation: {number1} {item} {number2}: {result}\n")
+                self.solve_output_history.append(f"Now solving: {current_expression}")
             else:
                 number_stack.append(item)
         self.result = number_stack[0]
+
+    def show_solving_history(self):
+        if not self.full_verbosity:
+            print(self.solve_output_history[0])
+            print(self.solve_output_history[1])
+            print(self.solve_output_history[2])
+            print(self.solve_output_history[-1])
+            return
+
+        for item in self.solve_output_history:
+            print(item)
 
     def init_expression(self):
         print("Building expression . . .")
@@ -118,8 +132,10 @@ def main():
     exp = "(33+0#2^2^2)*4#2+(555/2)+1"
     postfix_exp = PostfixExpression(exp)
     postfix_exp.solve()
+    postfix_exp.show_solving_history()
 
     # expression from xml
+    PostfixExpression.max_number_size = 30
     my_path = Path(os.path.join(os.getcwd(), 'testing.xml'))
     a = PostfixExpression.import_from_xml(my_path)
     a.solve()
