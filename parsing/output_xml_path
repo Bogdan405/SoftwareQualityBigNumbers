@@ -1,0 +1,16 @@
+<expr>
+<symbol>(</symbol>
+<number>999111111</number>
+<op>-</op>
+<number>222222</number>
+<symbol>)</symbol>
+<op>-</op>
+<number>333333</number>
+<op>+</op>
+<number>9</number>
+<op>#</op>
+<number>2</number>
+</expr>
+<equal-to>
+998555559
+</equal-to>

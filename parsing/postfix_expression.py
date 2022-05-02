@@ -128,7 +128,10 @@ class PostfixExpression:
                 number = ""
             else:
                 index+=1
-        print("translator FINAL: ", "<expr>\n"+final+"</expr>\n<equal-to>\n"+self.result.value+"\n</equal-to>")
+
+        f = open("output_xml_path", "w")
+        f.write("<expr>\n"+final+"</expr>\n<equal-to>\n"+self.result.value+"\n</equal-to>")
+        f.close()
 
 
     def build_post_fixed_expression(self, expression_string: str):
