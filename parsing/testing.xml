@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <expr>
+    <number>11111</number>
+    <op>+</op>
     <symbol>(</symbol>
-    <number>999111111</number>
+    <number>2222</number>
     <op>-</op>
-    <number>222222</number>
+    <number>333</number>
     <symbol>)</symbol>
     <op>-</op>
-    <number>333333</number>
+    <number>44</number>
     <op>+</op>
     <number>9</number>
     <op>#</op>

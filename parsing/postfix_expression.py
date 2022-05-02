@@ -115,9 +115,10 @@ class PostfixExpression:
                     number += translator[index]
                     index += 1
                 final = final.replace(">\n" + number, ">\n<number>" + number + "</number>\n")
+                final = final.replace(number + "<op", "<number>" + number + "</number>\n<op")
             else:
                 index += 1
-
+        print("<expr>\n" + final + "</expr>\n<equal-to>\n" + self.result.value + "\n</equal-to>")
         with open(output_xml_path, "w+") as out_file:
             if self.result:
                 out_file.write("<expr>\n" + final + "</expr>\n<equal-to>\n" + self.result.value + "\n</equal-to>")
