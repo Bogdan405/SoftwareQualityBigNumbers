@@ -1,6 +1,8 @@
+import os.path
 from pathlib import Path
-
+from bs4 import BeautifulSoup
 from big_numbers.big_number import BigNumber
+import lxml
 
 
 class PostfixExpression:
@@ -26,7 +28,19 @@ class PostfixExpression:
         pass
 
     def import_from_xml(self, output_xml_path: Path):
-        pass
+
+        with open(output_xml_path, 'r') as f:
+            data = f.read()
+
+        BS_data = BeautifulSoup(data, "xml")
+
+        expr_parts = BS_data.find('expr').findChildren()
+
+        decoded = ''
+
+        for part in expr_parts:
+            decoded += part.string
+        return decoded
 
     def build_expression_stack(self, expression_string: str):
         output = []
@@ -43,7 +57,7 @@ class PostfixExpression:
 
             elif expression_string[index] not in self.precedence.keys():
                 number = ""
-                while index < len(expression_string) \
+                while index < len(expression_string)\
                         and expression_string[index] not in self.precedence.keys():
                     number += expression_string[index]
                     index += 1
@@ -51,7 +65,7 @@ class PostfixExpression:
                 output.append(BigNumber(number, self.max_number_size))
 
             else:
-                while len(self.expression_stack) != 0 and \
+                while len(self.expression_stack) != 0 and\
                         self.precedence[expression_string[index]] <= self.precedence[self.expression_stack[-1]]:
                     output.append(self.expression_stack.pop())
                 self.expression_stack.append(expression_string[index])
@@ -62,9 +76,15 @@ class PostfixExpression:
 
 
 def main():
-    exp = "(33+0#2^2^2)*4#2+(555/2)"
-    postfix_exp = PostfixExpression(exp)
-    print(postfix_exp.expression_stack)
+    # exp = "(33+0#2^2^2)*4#2+(555/2)"
+    # postfix_exp = PostfixExpression(exp)
+    # print(postfix_exp.expression_stack)
+    MyPath = os.getcwd()
+    MyPath = os.path.join(MyPath, 'testing.xml')
+    print("THE PATH IS", MyPath)
+    a = PostfixExpression
+    a = PostfixExpression.import_from_xml(a, MyPath)
+    print(a)
 
 
 if __name__ == '__main__':

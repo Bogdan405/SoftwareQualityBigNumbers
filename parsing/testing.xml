@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<expr>
+    <symbol>(</symbol>
+    <number>999111111</number>
+    <op>-</op>
+    <number>222222</number>
+    <symbol>)</symbol>
+    <op>-</op>
+    <number>333333</number>
+    <op>+</op>
+    <op>#</op>
+    <number>9</number>
+</expr>
