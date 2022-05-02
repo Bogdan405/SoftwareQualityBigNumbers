@@ -163,16 +163,10 @@ def main():
     # complex expression
     exp = "(33+0#2^2^2)*4#2+(555/2)+1"
     postfix_exp = PostfixExpression(exp)
-    # <<<<<<< HEAD
-    #     # postfix_exp.solve()
-    # =======
-    #     postfix_exp.solve()
-    #     postfix_exp.show_solving_history()
-    # >>>>>>> 42534a700dd7bdac5785a19ec1983166a3870989
 
     # expression from xml
     PostfixExpression.max_number_size = 30
-    my_path = Path(os.path.join(os.getcwd(), 'testing.xml'))
+    my_path = Path(os.path.join(os.getcwd(), 'in.xml'))
     a = PostfixExpression.import_from_xml(my_path)
     a.solve()
     a.show_solving_history()
@@ -180,7 +174,7 @@ def main():
     print("We have:  ", a.expression_string)
     print("Equal to: ", a.result)
 
-    my_path_out = Path(os.path.join(os.getcwd(), 'testingOUT.xml'))
+    my_path_out = Path(os.path.join(os.getcwd(), 'out.xml'))
     print("OUT:", a.export_to_xml(my_path_out))
 
 
