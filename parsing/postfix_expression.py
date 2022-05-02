@@ -7,12 +7,14 @@ from bs4 import BeautifulSoup
 from big_numbers.big_number import BigNumber
 from parsing import errors
 
+import re
+
 
 class PostfixExpression:
     precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3, '#': 3, '(': 0, ')': 0}
     operator_mapping = {'+': BigNumber.__add__, '-': BigNumber.__sub__, '*': BigNumber.__mul__,
                         '/': BigNumber.__truediv__, '^': BigNumber.__pow__, '#': BigNumber.root}
-    max_number_size = 5
+    max_number_size = 5678678
 
     def __init__(self, expression_string: str):
         self.expression_string = expression_string
@@ -65,9 +67,6 @@ class PostfixExpression:
                 expression_stack.append(self.post_fixed_expression[index])
         return expression_stack[0]
 
-    def export_to_xml(self, output_xml_path: Path):
-        pass
-
     @staticmethod
     def import_from_xml(input_xml_path: Path) -> "PostfixExpression":
         data = input_xml_path.read_text()
@@ -78,6 +77,42 @@ class PostfixExpression:
         for part in expr_parts:
             decoded += part.string
         return PostfixExpression(decoded)
+
+    def export_to_xml(self, output_xml_path: Path):
+        translator = self.expression_string
+        translator = translator.replace("/", "<op>/</op>\n")
+        translator = translator.replace("-", "<op>-</op>\n")
+        translator = translator.replace("+", "<op>+</op>\n")
+        translator = translator.replace("*", "<op>*</op>\n")
+        translator = translator.replace("#", "<op>#</op>\n")
+        translator = translator.replace("^", "<op>^</op>\n")
+        translator = translator.replace("(", "<symbol>(</symbol>\n")
+        translator = translator.replace(")", "<symbol>)</symbol>\n")
+
+        print("teh expr ", self.expression_string)
+
+        print("translator: ", translator)
+        final=translator
+        index = 0
+        while index < len(translator):
+            #print("index", index)
+            number = ""
+            if index < len(translator) and (translator[index] == '0' or translator[index] == '1' or translator[index] == '2' or translator[index] == '2' or translator[index] == '3' or translator[index] == '4' or translator[index] == '5' or translator[index] == '6' or translator[index] == '7' or translator[index] == '8' or translator[index] == '9'):
+                number += translator[index]
+                #print("Trans{{{{XXX}}}   ", translator[index], "at ", index)
+                index += 1
+                while index < len(translator) and (translator[index] == '0' or translator[index] == '1' or translator[index] == '2' or translator[index] == '2' or translator[index] == '3' or translator[index] == '4' or translator[index] == '5' or translator[index] == '6' or translator[index] == '7' or translator[index] == '8' or translator[index] == '9'):
+                    number += translator[index]
+                    #print("Trans{{{{XXX}}}   ", translator[index], "at ", index)
+                    index += 1
+
+                print("NUMBER   ", number)
+                final = final.replace(">\n"+number, ">\n<number>"+number+"</number>\n")
+                number = ""
+            else:
+                index+=1
+        print("translator FINAL: ", "<expr>\n"+final+"</expr>\n<equal-to>\n"+self.result.value+"\n</equal-to>")
+
 
     def build_post_fixed_expression(self, expression_string: str):
         output = []
@@ -95,7 +130,7 @@ class PostfixExpression:
 
             elif expression_string[index] not in self.precedence.keys():
                 number = ""
-                while index < len(expression_string) \
+                while index < len(expression_string)\
                         and expression_string[index] not in self.precedence.keys():
                     number += expression_string[index]
                     index += 1
@@ -103,7 +138,7 @@ class PostfixExpression:
                 output.append(BigNumber(number, self.max_number_size))
 
             else:
-                while len(self.post_fixed_expression) != 0 and \
+                while len(self.post_fixed_expression) != 0 and\
                         self.precedence[expression_string[index]] <= self.precedence[self.post_fixed_expression[-1]]:
                     output.append(self.post_fixed_expression.pop())
                 self.post_fixed_expression.append(expression_string[index])
@@ -117,12 +152,18 @@ def main():
     # complex expression
     exp = "(33+0#2^2^2)*4#2+(555/2)+1"
     postfix_exp = PostfixExpression(exp)
-    postfix_exp.solve()
+    # postfix_exp.solve()
 
     # expression from xml
     my_path = Path(os.path.join(os.getcwd(), 'testing.xml'))
     a = PostfixExpression.import_from_xml(my_path)
     a.solve()
+
+    print("We have:  ", a.expression_string)
+    print("Equal to: ", a.result)
+
+    my_path_out = Path(os.path.join(os.getcwd(), 'testingOUT.xml'))
+    print("OUT:", a.export_to_xml(my_path_out))
 
 
 if __name__ == '__main__':
