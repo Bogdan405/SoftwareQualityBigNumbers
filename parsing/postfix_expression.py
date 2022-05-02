@@ -46,10 +46,6 @@ class PostfixExpression:
         print("Building expression . . .")
         self.build_post_fixed_expression(self.expression_string)
         print("Validating expression . . .")
-        self.validate_post_fixed_expression()
-
-    def validate_post_fixed_expression(self):
-
         self.restore_post_fixed_to_string([], 0)
 
     def restore_post_fixed_to_string(self, expression_stack, current_index):
