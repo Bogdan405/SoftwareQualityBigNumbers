@@ -24,3 +24,9 @@ class DivisionByZero(ValueError):
     def __init__(self, a, b):
         super(DivisionByZero, self).__init__(
             f"Cannot divide by 0 in: {a} / {b}")
+
+
+class NotASquareRoot(ValueError):
+    def __init__(self, a):
+        super(NotASquareRoot, self).__init__(
+            f"Invalid root {a}. Application can only take square roots, for now...")

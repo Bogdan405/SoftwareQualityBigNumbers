@@ -1,14 +1,20 @@
-from big_numbers.big_number import BigNumber
 from pathlib import Path
+
+from big_numbers.big_number import BigNumber
 
 
 class PostfixExpression:
+    precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3, '#': 3}
+    operator_mapping = {'+': BigNumber.__add__, '-': BigNumber.__sub__, '*': BigNumber.__mul__,
+                        '/': BigNumber.__truediv__, '^': BigNumber.__pow__, '#': BigNumber.root}
+    max_number_size = 5
 
     def __init__(self, expression_string: str):
-        self.expression_stack = self.build_expression_stack(expression_string)
         self.current_result = None
         self.current_expression = None
         self.executed_expression = None
+        self.expression_stack = []
+        self.build_expression_stack(expression_string)
 
     def advance(self):
         pass
@@ -22,52 +28,46 @@ class PostfixExpression:
     def import_from_xml(self, output_xml_path: Path):
         pass
 
-    @staticmethod
-    def build_expression_stack(expression_string: str) -> list:
-        Operators = set(['+', '-', '*', '/', '(', ')', '^'])  # collection of Operators
+    def build_expression_stack(self, expression_string: str):
+        output = []
+        index = 0
+        while index < len(expression_string):
+            if expression_string[index] not in self.precedence.keys():
+                number = ""
+                while index < len(expression_string) \
+                        and expression_string[index] not in self.precedence.keys():
+                    number += expression_string[index]
+                    index += 1
+                index -= 1
+                output.append(BigNumber(number, self.max_number_size))
 
-        Priority = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3}  # dictionary having priorities of Operators
+            elif expression_string[index] == '(':
+                self.expression_stack.append(expression_string[index])
 
-        def infixToPostfix(expression):
-
-            stack = []  # initialization of empty stack
-
-            output = ''
-            same_number_flag = 1
-            expr_list = []
-
-            for character in expression:
-
-                if character not in Operators:  # if an operand append in postfix expression
-                    if same_number_flag == 1:
-                        output += character
-                    else:
-                        expr_list.append(BigNumber(output, 999999))
-                        output = ''
-                        same_number_flag = 1
-                        output += character
-
-                elif character == '(':  # else Operators push onto stack
-                    same_number_flag = 0
-                    stack.append('(')
-
-                elif character == ')':
-                    same_number_flag = 0
-                    while stack and stack[-1] != '(':
-                        expr_list.append(stack.pop())
-
-                    stack.pop()
-
+            elif expression_string[index] == ')':
+                while len(self.expression_stack) != 0 and self.expression_stack[-1] != '(':
+                    output.append(self.expression_stack.pop())
+                if len(self.expression_stack) != 0 and self.expression_stack[-1] != '(':
+                    raise ValueError
                 else:
-                    same_number_flag = 0
-                    while stack and stack[-1] != '(' and Priority[character] <= Priority[stack[-1]]:
-                        expr_list.append(stack.pop())
-                    stack.append(character)
+                    self.expression_stack.pop()
 
-            while stack:
-                #output += stack.pop()
-                expr_list.append(stack.pop())
+            else:
+                while len(self.expression_stack) != 0 and \
+                        self.precedence[expression_string[index]] <= self.precedence[self.expression_stack[-1]]:
+                    output.append(self.expression_stack.pop())
+                self.expression_stack.append(expression_string[index])
+            index += 1
+        while len(self.expression_stack):
+            output.append(self.expression_stack.pop())
+        self.expression_stack = output
 
-            return expr_list
 
-        return infixToPostfix(expression_string)
+def main():
+    exp = "33+0#2^2^2"
+    postfix_exp = PostfixExpression(exp)
+    print(postfix_exp.expression_stack)
+
+
+if __name__ == '__main__':
+    main()

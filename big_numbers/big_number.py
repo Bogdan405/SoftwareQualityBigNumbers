@@ -145,7 +145,10 @@ class BigNumber:
             b = b - one
         return result
 
-    def square_root(self):
+    def root(self, root_number=2):
+
+        if root_number != 2:
+            raise errors.NotASquareRoot(root_number)
 
         zero = BigNumber("0", self.max_size)
         two = BigNumber("2", self.max_size)
@@ -202,7 +205,7 @@ def main():
     print(x < y)
     print(x == x)
     print(x + BigNumber("0", 30))
-    print(x.square_root())
+    print(x.root())
 
 
 if __name__ == '__main__':
