@@ -13,7 +13,7 @@ class PostfixExpression:
     operator_mapping = {'+': BigNumber.__add__, '-': BigNumber.__sub__, '*': BigNumber.__mul__,
                         '/': BigNumber.__truediv__, '^': BigNumber.__pow__, '#': BigNumber.root}
     max_number_size = 5
-    full_verbosity = False
+    full_verbosity = True
 
     def __init__(self, expression_string: str):
         self.expression_string = expression_string
@@ -40,10 +40,12 @@ class PostfixExpression:
                 number_stack.append(result)
                 current_expression = self.restore_post_fixed_to_string(copy.deepcopy(number_stack), index + 1)
                 self.solve_output_history.append(f"Solving atomic operation: {number1} {item} {number2}: {result}\n")
-                self.solve_output_history.append(f"Now solving: {current_expression}")
+                if index + 1 != len(self.post_fixed_expression):
+                    self.solve_output_history.append(f"Now solving: {current_expression}")
             else:
                 number_stack.append(item)
         self.result = number_stack[0]
+        self.solve_output_history.append(f"Result: {self.result}")
 
     def show_solving_history(self):
         if not self.full_verbosity:
@@ -139,6 +141,7 @@ def main():
     my_path = Path(os.path.join(os.getcwd(), 'testing.xml'))
     a = PostfixExpression.import_from_xml(my_path)
     a.solve()
+    a.show_solving_history()
 
 
 if __name__ == '__main__':
