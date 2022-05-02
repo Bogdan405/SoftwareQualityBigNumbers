@@ -82,7 +82,8 @@ class PostfixExpression:
             elif expression_string[index] == ')':
                 while len(self.post_fixed_expression) != 0 and self.post_fixed_expression[-1] != '(':
                     output.append(self.post_fixed_expression.pop())
-
+                if not len(self.post_fixed_expression):
+                    raise errors.AdditionalClosingBracket()
                 self.post_fixed_expression.pop()
 
             elif expression_string[index] not in self.precedence.keys():
@@ -106,7 +107,7 @@ class PostfixExpression:
 
 
 def main():
-    exp = "(33+0#2^2^2)*4#2+(555/2)+1"
+    exp = "(33+0#2^2^2)*4#2+(555/2)+1)"
     postfix_exp = PostfixExpression(exp)
     postfix_exp.solve()
 

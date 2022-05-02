@@ -9,3 +9,8 @@ class IllegalSymbol(ValueError):
     def __init__(self, invalid_character, pos):
         super(MisplacedSymbol, self).__init__(
             f"The expression contains a misplaced or illegal character '{invalid_character}' at position {pos}")
+
+
+class AdditionalClosingBracket(ValueError):
+    def __init__(self):
+        super(AdditionalClosingBracket, self).__init__("The expression contains an extra closing bracket")
