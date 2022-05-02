@@ -42,6 +42,7 @@ class PostfixExpression:
                     raise ValueError
                 else:
                     self.expression_stack.pop()
+                    
             elif expression_string[index] not in self.precedence.keys():
                 number = ""
                 while index < len(expression_string) \
