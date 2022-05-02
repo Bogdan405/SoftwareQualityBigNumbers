@@ -10,7 +10,7 @@ def mainloop():
             case "automatic":
                 events.automatic()
 
-            case "i":
+            case "interactive":
                 events.interactive()
 
             case "number_size":

@@ -8,6 +8,7 @@
     <op>-</op>
     <number>333333</number>
     <op>+</op>
-    <op>#</op>
     <number>9</number>
+    <op>#</op>
+    <number>2</number>
 </expr>

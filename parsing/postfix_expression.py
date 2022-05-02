@@ -1,5 +1,8 @@
 import copy
+import os
 from pathlib import Path
+
+from bs4 import BeautifulSoup
 
 from big_numbers.big_number import BigNumber
 from parsing import errors
@@ -33,7 +36,7 @@ class PostfixExpression:
                 result = operator(number1, number2)
                 number_stack.append(result)
                 current_expression = self.restore_post_fixed_to_string(copy.deepcopy(number_stack), index + 1)
-                print(f"{number1} {item} {number2}: {result}")
+                print(f"Solving atomic operation: {number1} {item} {number2}: {result}\n")
                 print(f"Now solving: {current_expression}")
             else:
                 number_stack.append(item)
@@ -69,8 +72,16 @@ class PostfixExpression:
     def export_to_xml(self, input_xml_path: Path):
         pass
 
-    def import_from_xml(self, output_xml_path: Path):
-        pass
+    @staticmethod
+    def import_from_xml(output_xml_path: Path) -> "PostfixExpression":
+        data = output_xml_path.read_text()
+        bs_data = BeautifulSoup(data, "xml")
+        expr_parts = bs_data.find('expr').findChildren()
+        decoded = ''
+
+        for part in expr_parts:
+            decoded += part.string
+        return PostfixExpression(decoded)
 
     def build_post_fixed_expression(self, expression_string: str):
         output = []
@@ -107,9 +118,15 @@ class PostfixExpression:
 
 
 def main():
-    exp = "(33+0#2^2^2)*4#2+(555/2)+1)"
+    # complex expression
+    exp = "(33+0#2^2^2)*4#2+(555/2)+1"
     postfix_exp = PostfixExpression(exp)
     postfix_exp.solve()
+
+    # expression from xml
+    my_path = Path(os.path.join(os.getcwd(), 'testing.xml'))
+    a = PostfixExpression.import_from_xml(my_path)
+    a.solve()
 
 
 if __name__ == '__main__':

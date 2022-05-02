@@ -7,7 +7,7 @@ class MisplacedSymbol(ValueError):
 
 class IllegalSymbol(ValueError):
     def __init__(self, invalid_character, pos):
-        super(MisplacedSymbol, self).__init__(
+        super(IllegalSymbol, self).__init__(
             f"The expression contains a misplaced or illegal character '{invalid_character}' at position {pos}")
 
 
