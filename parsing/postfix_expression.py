@@ -4,7 +4,7 @@ from big_numbers.big_number import BigNumber
 
 
 class PostfixExpression:
-    precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3, '#': 3}
+    precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3, '#': 3, '(': 0, ')': 0}
     operator_mapping = {'+': BigNumber.__add__, '-': BigNumber.__sub__, '*': BigNumber.__mul__,
                         '/': BigNumber.__truediv__, '^': BigNumber.__pow__, '#': BigNumber.root}
     max_number_size = 5
@@ -32,16 +32,7 @@ class PostfixExpression:
         output = []
         index = 0
         while index < len(expression_string):
-            if expression_string[index] not in self.precedence.keys():
-                number = ""
-                while index < len(expression_string) \
-                        and expression_string[index] not in self.precedence.keys():
-                    number += expression_string[index]
-                    index += 1
-                index -= 1
-                output.append(BigNumber(number, self.max_number_size))
-
-            elif expression_string[index] == '(':
+            if expression_string[index] == '(':
                 self.expression_stack.append(expression_string[index])
 
             elif expression_string[index] == ')':
@@ -51,6 +42,14 @@ class PostfixExpression:
                     raise ValueError
                 else:
                     self.expression_stack.pop()
+            elif expression_string[index] not in self.precedence.keys():
+                number = ""
+                while index < len(expression_string) \
+                        and expression_string[index] not in self.precedence.keys():
+                    number += expression_string[index]
+                    index += 1
+                index -= 1
+                output.append(BigNumber(number, self.max_number_size))
 
             else:
                 while len(self.expression_stack) != 0 and \
@@ -64,7 +63,7 @@ class PostfixExpression:
 
 
 def main():
-    exp = "33+0#2^2^2"
+    exp = "(33+0#2^2^2)*4#2+(555/2)"
     postfix_exp = PostfixExpression(exp)
     print(postfix_exp.expression_stack)
 
