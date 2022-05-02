@@ -25,8 +25,8 @@ class PostfixExpression:
         number_stack = []
         current_expression = self.restore_post_fixed_to_string(copy.deepcopy(number_stack), 0)
         print(f"Transformed expression to {current_expression}")
-
         print(f"Now solving: {current_expression}")
+
         for index, item in enumerate(self.post_fixed_expression):
 
             if item in self.operator_mapping.keys():
@@ -65,12 +65,12 @@ class PostfixExpression:
                 expression_stack.append(self.post_fixed_expression[index])
         return expression_stack[0]
 
-    def export_to_xml(self, input_xml_path: Path):
+    def export_to_xml(self, output_xml_path: Path):
         pass
 
     @staticmethod
-    def import_from_xml(output_xml_path: Path) -> "PostfixExpression":
-        data = output_xml_path.read_text()
+    def import_from_xml(input_xml_path: Path) -> "PostfixExpression":
+        data = input_xml_path.read_text()
         bs_data = BeautifulSoup(data, "xml")
         expr_parts = bs_data.find('expr').findChildren()
         decoded = ''
