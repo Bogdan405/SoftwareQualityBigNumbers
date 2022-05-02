@@ -38,11 +38,9 @@ class PostfixExpression:
             elif expression_string[index] == ')':
                 while len(self.expression_stack) != 0 and self.expression_stack[-1] != '(':
                     output.append(self.expression_stack.pop())
-                if len(self.expression_stack) != 0 and self.expression_stack[-1] != '(':
-                    raise ValueError
-                else:
-                    self.expression_stack.pop()
-                    
+
+                self.expression_stack.pop()
+
             elif expression_string[index] not in self.precedence.keys():
                 number = ""
                 while index < len(expression_string) \
