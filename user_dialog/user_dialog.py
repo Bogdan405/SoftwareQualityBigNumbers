@@ -70,7 +70,10 @@ class UserDialog:
 
     @classmethod
     def export_current_expression_to_xml(cls, xml_path: Path):
-        cls.current_expression.export_to_xml(xml_path)
+        try:
+            cls.current_expression.export_to_xml(xml_path)
+        except Exception as e:
+            print(e)
 
     @classmethod
     def interactive_menu(cls):
