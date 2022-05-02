@@ -18,7 +18,7 @@ def interactive():
 
     expr = PostfixExpression(expression)
 
-    for x in expr.expression_stack:
+    for x in expr.post_fixed_expression:
         if type(x) is BigNumber:
             print("element is: ", x.big_number)
         else:

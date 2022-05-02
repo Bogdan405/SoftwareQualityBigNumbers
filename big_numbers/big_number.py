@@ -46,6 +46,9 @@ class BigNumber:
                 return True
         return False
 
+    def __hash__(self):
+        return -1
+
     def __repr__(self):
         return self.value
 
@@ -145,9 +148,9 @@ class BigNumber:
             b = b - one
         return result
 
-    def root(self, root_number=2):
+    def root(self, root_number: "BigNumber"):
 
-        if root_number != 2:
+        if root_number != BigNumber("2", self.max_size):
             raise errors.NotASquareRoot(root_number)
 
         zero = BigNumber("0", self.max_size)

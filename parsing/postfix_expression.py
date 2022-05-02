@@ -1,6 +1,8 @@
+import copy
 from pathlib import Path
 
 from big_numbers.big_number import BigNumber
+from parsing import errors
 
 
 class PostfixExpression:
@@ -10,17 +12,59 @@ class PostfixExpression:
     max_number_size = 5
 
     def __init__(self, expression_string: str):
-        self.current_result = None
-        self.current_expression = None
-        self.executed_expression = None
-        self.expression_stack = []
-        self.build_expression_stack(expression_string)
+        self.expression_string = expression_string
+        self.result = None
+        self.post_fixed_expression = []
+        self.init_expression()
 
-    def advance(self):
-        pass
+    def solve(self):
+        print(f"Analyzing expression {self.expression_string}:")
+        number_stack = []
+        current_expression = self.restore_post_fixed_to_string(copy.deepcopy(number_stack), 0)
+        print(f"Transformed expression to {current_expression}")
 
-    def remaining_stack_to_expression_string(self):
-        pass
+        print(f"Now solving: {current_expression}")
+        for index, item in enumerate(self.post_fixed_expression):
+
+            if item in self.operator_mapping.keys():
+                number2 = number_stack.pop()
+                number1 = number_stack.pop()
+                operator = self.operator_mapping[item]
+                result = operator(number1, number2)
+                number_stack.append(result)
+                current_expression = self.restore_post_fixed_to_string(copy.deepcopy(number_stack), index + 1)
+                print(f"{number1} {item} {number2}: {result}")
+                print(f"Now solving: {current_expression}")
+            else:
+                number_stack.append(item)
+        self.result = number_stack[0]
+
+    def init_expression(self):
+        print("Building expression . . .")
+        self.build_post_fixed_expression(self.expression_string)
+        print("Validating expression . . .")
+        self.validate_post_fixed_expression()
+
+    def validate_post_fixed_expression(self):
+
+        self.restore_post_fixed_to_string([], 0)
+
+    def restore_post_fixed_to_string(self, expression_stack, current_index):
+        for index in range(current_index, len(self.post_fixed_expression)):
+            if self.post_fixed_expression[index] in self.operator_mapping.keys():
+                if len(expression_stack) < 2:
+                    raise errors.MisplacedSymbol(self.post_fixed_expression[index], expression_stack[-1])
+
+                number2 = expression_stack.pop()
+                number1 = expression_stack.pop()
+                expression_stack.append(f"({number1}{self.post_fixed_expression[index]}{number2})")
+
+            elif self.post_fixed_expression[index] in self.precedence.keys():
+                raise errors.MisplacedSymbol(self.post_fixed_expression[index], expression_stack[-1])
+
+            else:
+                expression_stack.append(self.post_fixed_expression[index])
+        return expression_stack[0]
 
     def export_to_xml(self, input_xml_path: Path):
         pass
@@ -28,18 +72,18 @@ class PostfixExpression:
     def import_from_xml(self, output_xml_path: Path):
         pass
 
-    def build_expression_stack(self, expression_string: str):
+    def build_post_fixed_expression(self, expression_string: str):
         output = []
         index = 0
         while index < len(expression_string):
             if expression_string[index] == '(':
-                self.expression_stack.append(expression_string[index])
+                self.post_fixed_expression.append(expression_string[index])
 
             elif expression_string[index] == ')':
-                while len(self.expression_stack) != 0 and self.expression_stack[-1] != '(':
-                    output.append(self.expression_stack.pop())
+                while len(self.post_fixed_expression) != 0 and self.post_fixed_expression[-1] != '(':
+                    output.append(self.post_fixed_expression.pop())
 
-                self.expression_stack.pop()
+                self.post_fixed_expression.pop()
 
             elif expression_string[index] not in self.precedence.keys():
                 number = ""
@@ -51,20 +95,20 @@ class PostfixExpression:
                 output.append(BigNumber(number, self.max_number_size))
 
             else:
-                while len(self.expression_stack) != 0 and \
-                        self.precedence[expression_string[index]] <= self.precedence[self.expression_stack[-1]]:
-                    output.append(self.expression_stack.pop())
-                self.expression_stack.append(expression_string[index])
+                while len(self.post_fixed_expression) != 0 and \
+                        self.precedence[expression_string[index]] <= self.precedence[self.post_fixed_expression[-1]]:
+                    output.append(self.post_fixed_expression.pop())
+                self.post_fixed_expression.append(expression_string[index])
             index += 1
-        while len(self.expression_stack):
-            output.append(self.expression_stack.pop())
-        self.expression_stack = output
+        while len(self.post_fixed_expression):
+            output.append(self.post_fixed_expression.pop())
+        self.post_fixed_expression = output
 
 
 def main():
-    exp = "(33+0#2^2^2)*4#2+(555/2)"
+    exp = "(33+0#2^2^2)*4#2+(555/2)+1"
     postfix_exp = PostfixExpression(exp)
-    print(postfix_exp.expression_stack)
+    postfix_exp.solve()
 
 
 if __name__ == '__main__':
