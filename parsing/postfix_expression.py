@@ -7,8 +7,6 @@ from bs4 import BeautifulSoup
 from big_numbers.big_number import BigNumber
 from parsing import errors
 
-import re
-
 
 class PostfixExpression:
     precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3, '#': 3, '(': 0, ')': 0}
@@ -106,33 +104,25 @@ class PostfixExpression:
         translator = translator.replace("(", "<symbol>(</symbol>\n")
         translator = translator.replace(")", "<symbol>)</symbol>\n")
 
-        # print("teh expr ", self.expression_string)
-        #
-        # print("translator: ", translator)
-        final=translator
+        final = translator
         index = 0
         while index < len(translator):
-            #print("index", index)
             number = ""
-            if index < len(translator) and (translator[index] == '0' or translator[index] == '1' or translator[index] == '2' or translator[index] == '2' or translator[index] == '3' or translator[index] == '4' or translator[index] == '5' or translator[index] == '6' or translator[index] == '7' or translator[index] == '8' or translator[index] == '9'):
+            if index < len(translator) and translator[index] in "0123456789":
                 number += translator[index]
-                #print("Trans{{{{XXX}}}   ", translator[index], "at ", index)
                 index += 1
-                while index < len(translator) and (translator[index] == '0' or translator[index] == '1' or translator[index] == '2' or translator[index] == '2' or translator[index] == '3' or translator[index] == '4' or translator[index] == '5' or translator[index] == '6' or translator[index] == '7' or translator[index] == '8' or translator[index] == '9'):
+                while index < len(translator) and translator[index] in "0123456789":
                     number += translator[index]
-                    #print("Trans{{{{XXX}}}   ", translator[index], "at ", index)
                     index += 1
-
-                # print("NUMBER   ", number)
-                final = final.replace(">\n"+number, ">\n<number>"+number+"</number>\n")
-                number = ""
+                final = final.replace(">\n" + number, ">\n<number>" + number + "</number>\n")
             else:
-                index+=1
+                index += 1
 
-        f = open("output_xml_path", "w")
-        f.write("<expr>\n"+final+"</expr>\n<equal-to>\n"+self.result.value+"\n</equal-to>")
-        f.close()
-
+        with open(output_xml_path, "w+") as out_file:
+            if self.result:
+                out_file.write("<expr>\n" + final + "</expr>\n<equal-to>\n" + self.result.value + "\n</equal-to>")
+            else:
+                out_file.write("<expr>\n" + final + "</expr>")
 
     def build_post_fixed_expression(self, expression_string: str):
         output = []
@@ -150,7 +140,7 @@ class PostfixExpression:
 
             elif expression_string[index] not in self.precedence.keys():
                 number = ""
-                while index < len(expression_string)\
+                while index < len(expression_string) \
                         and expression_string[index] not in self.precedence.keys():
                     number += expression_string[index]
                     index += 1
@@ -158,7 +148,7 @@ class PostfixExpression:
                 output.append(BigNumber(number, self.max_number_size))
 
             else:
-                while len(self.post_fixed_expression) != 0 and\
+                while len(self.post_fixed_expression) != 0 and \
                         self.precedence[expression_string[index]] <= self.precedence[self.post_fixed_expression[-1]]:
                     output.append(self.post_fixed_expression.pop())
                 self.post_fixed_expression.append(expression_string[index])
@@ -172,12 +162,12 @@ def main():
     # complex expression
     exp = "(33+0#2^2^2)*4#2+(555/2)+1"
     postfix_exp = PostfixExpression(exp)
-# <<<<<<< HEAD
-#     # postfix_exp.solve()
-# =======
-#     postfix_exp.solve()
-#     postfix_exp.show_solving_history()
-# >>>>>>> 42534a700dd7bdac5785a19ec1983166a3870989
+    # <<<<<<< HEAD
+    #     # postfix_exp.solve()
+    # =======
+    #     postfix_exp.solve()
+    #     postfix_exp.show_solving_history()
+    # >>>>>>> 42534a700dd7bdac5785a19ec1983166a3870989
 
     # expression from xml
     PostfixExpression.max_number_size = 30
