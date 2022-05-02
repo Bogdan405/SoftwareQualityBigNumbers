@@ -191,7 +191,19 @@ class BigNumber:
             raise errors.NumberSizeGreaterThanLimit(big_number_string, max_size)
 
 
-if __name__ == '__main__':
-    x = BigNumber("1000000", 30)
-    y = BigNumber("0", 30)
+def main():
+    x = BigNumber("10000", 30)
+    y = BigNumber("333", 30)
+    print(x)
+    print(x + y)
+    print(x - y)
+    print(x / y)
+    print(x ** BigNumber("3", 30))
+    print(x < y)
+    print(x == x)
+    print(x + BigNumber("0", 30))
     print(x.square_root())
+
+
+if __name__ == '__main__':
+    main()
