@@ -24,7 +24,8 @@ class UserDialog:
               " that needs to be evaluated")
         print(
             f"number_size: change the maximum allowed big number size (currently: {PostfixExpression.max_number_size})")
-        print("verbosity: change the current verbosity for the 'solve' commands")
+        print(
+            f"verbosity: change the current verbosity for the 'solve' commands (full: {PostfixExpression.full_verbosity})")
         print("current_expression: shows the current expression")
         print("solve: solves the current expression")
         print("quit: exist the program")
