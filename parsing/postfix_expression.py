@@ -106,9 +106,9 @@ class PostfixExpression:
         translator = translator.replace("(", "<symbol>(</symbol>\n")
         translator = translator.replace(")", "<symbol>)</symbol>\n")
 
-        print("teh expr ", self.expression_string)
-
-        print("translator: ", translator)
+        # print("teh expr ", self.expression_string)
+        #
+        # print("translator: ", translator)
         final=translator
         index = 0
         while index < len(translator):
@@ -123,7 +123,7 @@ class PostfixExpression:
                     #print("Trans{{{{XXX}}}   ", translator[index], "at ", index)
                     index += 1
 
-                print("NUMBER   ", number)
+                # print("NUMBER   ", number)
                 final = final.replace(">\n"+number, ">\n<number>"+number+"</number>\n")
                 number = ""
             else:
