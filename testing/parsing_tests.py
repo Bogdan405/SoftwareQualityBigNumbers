@@ -3,7 +3,7 @@ from parsing.postfix_expression import main as main_parsing_example, PostfixExpr
 from parsing import errors as perrors
 from big_numbers import errors as berrors
 from testing.utils import get_test_suite
-
+from unittest.mock import MagicMock
 
 class TestBuildPostFixedExpression(unittest.TestCase):
 
