@@ -140,6 +140,13 @@ class TestBigNumberOperations(unittest.TestCase):
 
         self.assertEqual(number1.root(number2), number3, "Number root aprox failed")
 
+    def test_root_3(self):
+        number1 = BigNumber("100", 10)
+        number2 = BigNumber("6", 10)
+
+        with self.assertRaises(errors.NotASquareRoot, msg="Non square root error raise failed"):
+            number1.root(number2)
+
     def test_string_valid(self):
         number1 = BigNumber("123123000123123", 100)
 
@@ -147,8 +154,11 @@ class TestBigNumberOperations(unittest.TestCase):
 
     def test_string_null(self):
 
-        with self.assertRaises(errors.InvalidCharInNumberString, msg="null string verification failed"):
-            number1 = BigNumber("", 100)
+        try:
+            with self.assertRaises(errors.InvalidCharInNumberString, msg="null string verification failed"):
+                number1 = BigNumber("", 100)
+        except Exception as e:
+            self.fail(f"null string verification failed wrong error")
 
 
 TEST_CASES = [TestBigNumberInit, TestBigNumberOperations]
