@@ -96,7 +96,7 @@ class TestRestorePostfixedToString(unittest.TestCase):
             self.fail(f"Generated another error")
 
     def test_misplaced_number_error(self):
-        self.expression.post_fixed_expression = [3, 3, "+", "+"]
+        self.expression.post_fixed_expression = [3, 3, 3, "+"]
         try:
             self.assertRaises(perrors.MisplacedSymbol, self.expression.restore_post_fixed_to_string, [], 0)
         except Exception as e:

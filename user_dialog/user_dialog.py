@@ -8,6 +8,13 @@ root.withdraw()
 root.attributes('-topmost', True)
 
 
+class PrintMock():
+    def __init__(self):
+        self.output = []
+
+    def print(self, *args):
+        self.output.extend(args)
+
 class UserDialog:
     current_expression: PostfixExpression = None
 
