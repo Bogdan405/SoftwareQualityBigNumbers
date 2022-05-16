@@ -1,12 +1,9 @@
 import io
 import unittest
 from unittest import mock
-from nose.tools import *
 from user_dialog.user_dialog import UserDialog
 from parsing.postfix_expression import PostfixExpression
-from parsing import errors
-from big_numbers import errors
-from unittest.mock import patch
+
 
 class PrintMock():
     def __init__(self):
@@ -61,7 +58,7 @@ class TestAutomaticMenu(unittest.TestCase):
     def setUp(self) -> None:
         UserDialog.current_expression = PostfixExpression("3+3")
 
-#B
+
 class TestChangeCurrentExpressionXML(unittest.TestCase):
 
     def test_manual_interaction(self):
@@ -78,12 +75,11 @@ class TestChangeCurrentExpressionXML(unittest.TestCase):
         UserDialog.current_expression = None
 
 
-
 class TestExportCurrentExpressionSML(unittest.TestCase):
     def setUp(self) -> None:
         UserDialog.current_expression = PostfixExpression("3+3")
 
-#B
+
 class TestInteractiveMenu(unittest.TestCase):
     def test_current_expression(self):
         UserDialog.current_expression = PostfixMock()
@@ -97,7 +93,7 @@ class TestChangeNumberSize(unittest.TestCase):
     def setUp(self) -> None:
         UserDialog.current_expression = PostfixExpression("3+3")
 
-#B
+
 class TestModifyVerbosity(unittest.TestCase):
     def test_verbosity_correct_interaction(self):
         UserDialog.current_expression = PostfixMock("2+2")
@@ -113,8 +109,6 @@ class TestModifyVerbosity(unittest.TestCase):
         UserDialog.current_expression = None
 
 
-
-#B
 class TestSolveCurrentExpression(unittest.TestCase):
     def test_solve_expression(self):
         UserDialog.current_expression = PostfixMock("2+2")
