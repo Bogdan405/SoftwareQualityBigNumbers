@@ -1,8 +1,10 @@
 import io
 import unittest
 from unittest import mock
+from unittest.mock import MagicMock, Mock, patch
 from user_dialog.user_dialog import UserDialog
 from parsing.postfix_expression import PostfixExpression
+import builtins
 
 
 class PrintMock():
@@ -12,8 +14,9 @@ class PrintMock():
     def print(self, *args):
         self.output.extend(args)
 
+
 class PostfixMock():
-    def __init__(self, exp = "2"):
+    def __init__(self, exp="2"):
         self.expression_string = exp
 
     def solve(self):
@@ -22,19 +25,38 @@ class PostfixMock():
     def show_solving_history(self):
         return "history"
 
-    def import_from_xml(self,xml_path):
+    def import_from_xml(self, xml_path):
         if xml_path == "xml":
             raise ValueError
         print("import mock")
         return None
 
+
 class TestMainHelp(unittest.TestCase):
     def setUp(self) -> None:
-        UserDialog.current_expression = PostfixExpression("3+3")
+        UserDialog.current_expression = MagicMock()
 
-    def test_prints_something(self):
-        pass
+    def test_prints_correct_values(self):
+        test_number_size = 19
+        test_full_verbosity = False
+        UserDialog.current_expression.max_number_size = test_number_size
+        UserDialog.current_expression.full_verbosity = test_full_verbosity
+        printer = PrintMock()
+        with patch("builtins.print", printer.print):
+            UserDialog.main_help()
+        self.assertIn(str(test_number_size), printer.output[3])
+        self.assertIn(str(test_full_verbosity), printer.output[4])
 
+    def test_null_values(self):
+        test_number_size = None
+        test_full_verbosity = None
+        PostfixExpression.max_number_size = test_number_size
+        PostfixExpression.full_verbosity = test_full_verbosity
+        printer = PrintMock()
+        with patch("builtins.print", printer.print):
+            UserDialog.main_help()
+        self.assertIn(str(test_number_size), printer.output[3])
+        self.assertIn(str(test_full_verbosity), printer.output[4])
 
 
 class TestShowCurrentExpression(unittest.TestCase):
@@ -89,6 +111,7 @@ class TestInteractiveMenu(unittest.TestCase):
         self.assertEqual(fake_stdout.getvalue(), '2\n', msg="test_current_expression failed")
         UserDialog.current_expression = None
 
+
 class TestChangeNumberSize(unittest.TestCase):
     def setUp(self) -> None:
         UserDialog.current_expression = PostfixExpression("3+3")
@@ -122,7 +145,8 @@ class TestSolveCurrentExpression(unittest.TestCase):
         target2 = "history"
 
         self.assertEqual(UserDialog.current_expression.solve(), target1, msg="test_solve_expression failed solving")
-        self.assertEqual(UserDialog.current_expression.show_solving_history(), target2, msg="test_solve_expression failed history")
+        self.assertEqual(UserDialog.current_expression.show_solving_history(), target2,
+                         msg="test_solve_expression failed history")
         UserDialog.current_expression = None
 
 
