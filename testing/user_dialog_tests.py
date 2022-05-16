@@ -1,10 +1,13 @@
 import io
 import unittest
+from tkinter import Tk, filedialog
 from unittest import mock
 from unittest.mock import MagicMock, Mock, patch
 from user_dialog.user_dialog import UserDialog
 from parsing.postfix_expression import PostfixExpression
 import builtins
+import os
+from pathlib import Path
 
 
 class PrintMock():
@@ -78,7 +81,51 @@ class TestShowCurrentExpression(unittest.TestCase):
 
 class TestAutomaticMenu(unittest.TestCase):
     def setUp(self) -> None:
-        UserDialog.current_expression = PostfixExpression("3+3")
+        UserDialog.current_expression = MagicMock()
+        self._orig_pathexists = os.path.exists
+        os.path.exists = Mock(True)
+        self.export_path = Path('/my/path/not/exists')
+
+    @patch("builtins.input", return_value="import")
+    @patch("tkinter.filedialog.askopenfilename", return_value='/my/path/not/exists')
+    def test_correct_import_input(self, input, tkinter_filedialog):
+        printer = PrintMock()
+        with patch("builtins.print", printer.print):
+            with patch('user_dialog.user_dialog.UserDialog.change_current_expression_through_xml',
+                       unittest.mock.Mock()) as m:
+                UserDialog.automatic_menu()
+                m.assert_called_once_with(self.export_path)
+        self.assertEqual(len(printer.output), 4)
+
+    @patch("builtins.input", return_value="export")
+    @patch("tkinter.filedialog.askopenfilename", return_value='/my/path/not/exists')
+    def test_correct_export_input(self, input, tkinter_filedialog):
+        printer = PrintMock()
+        with patch("builtins.print", printer.print):
+            with patch('user_dialog.user_dialog.UserDialog.export_current_expression_to_xml',
+                       unittest.mock.Mock()) as m:
+                UserDialog.automatic_menu()
+                m.assert_called_once_with(self.export_path)
+        self.assertEqual(len(printer.output), 4)
+
+    @patch("builtins.input", return_value="back")
+    @patch("tkinter.filedialog.askopenfilename", return_value='/my/path/not/exists')
+    def test_correct_back_input(self, input, tkinter_filedialog):
+        printer = PrintMock()
+        with patch("builtins.print", printer.print):
+            UserDialog.automatic_menu()
+        self.assertEqual(len(printer.output), 4)
+
+    def test_incorrect_file_path(self):
+        pass
+
+    @patch("builtins.input", side_effect=["blabla", "back"])
+    @patch("tkinter.filedialog.askopenfilename", return_value='/my/path/not/exists')
+    def test_incorrect_user_input(self, input, tkinter_filedialog):
+        printer = PrintMock()
+        with patch("builtins.print", printer.print):
+            UserDialog.automatic_menu()
+        self.assertEqual(len(printer.output), 8)
 
 
 class TestChangeCurrentExpressionXML(unittest.TestCase):
