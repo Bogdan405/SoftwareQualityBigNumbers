@@ -116,9 +116,6 @@ class TestAutomaticMenu(unittest.TestCase):
             UserDialog.automatic_menu()
         self.assertEqual(len(printer.output), 4)
 
-    def test_incorrect_file_path(self):
-        pass
-
     @patch("builtins.input", side_effect=["blabla", "back"])
     @patch("tkinter.filedialog.askopenfilename", return_value='/my/path/not/exists')
     def test_incorrect_user_input(self, input, tkinter_filedialog):
@@ -172,7 +169,31 @@ class TestInteractiveMenu(unittest.TestCase):
 
 class TestChangeNumberSize(unittest.TestCase):
     def setUp(self) -> None:
-        UserDialog.current_expression = PostfixExpression("3+3")
+        UserDialog.current_expression = MagicMock()
+
+    @patch("builtins.input", side_effect=["15"])
+    def test_correct_change(self, input):
+        printer = PrintMock()
+        with patch("builtins.print", printer.print):
+            UserDialog.modify_number_size()
+        self.assertEqual(1, len(printer.output))
+        self.assertEqual(UserDialog.current_expression.max_number_size, 15)
+
+    @patch("builtins.input", side_effect=["-15", "15"])
+    def test_invalid_number_size(self, input):
+        printer = PrintMock()
+        with patch("builtins.print", printer.print):
+            UserDialog.modify_number_size()
+        self.assertEqual(2, len(printer.output))
+        self.assertEqual(UserDialog.current_expression.max_number_size, 15)
+
+    @patch("builtins.input", side_effect=[":!", "20"])
+    def test_illegal_symbols(self, input):
+        printer = PrintMock()
+        with patch("builtins.print", printer.print):
+            UserDialog.modify_number_size()
+        self.assertEqual(2, len(printer.output))
+        self.assertEqual(UserDialog.current_expression.max_number_size, 20)
 
 
 class TestModifyVerbosity(unittest.TestCase):
