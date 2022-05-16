@@ -154,8 +154,8 @@ class TestExportCurrentExpressionSML(unittest.TestCase):
         self.export_path = Path('/my/path/not/exists')
 
     def test_calls_correct_method(self):
-        with patch("parsing.postfix_expression.PostfixExpression.import_from_xml", mock.Mock()) as m:
-            UserDialog.change_current_expression_through_xml(self.export_path)
+        with patch("user_dialog.user_dialog.UserDialog.current_expression.export_to_xml", mock.Mock()) as m:
+            UserDialog.export_current_expression_to_xml(self.export_path)
             m.assert_called_once_with(self.export_path)
 
 
