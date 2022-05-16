@@ -146,7 +146,18 @@ class TestChangeCurrentExpressionXML(unittest.TestCase):
 
 class TestExportCurrentExpressionSML(unittest.TestCase):
     def setUp(self) -> None:
-        UserDialog.current_expression = PostfixExpression("3+3")
+        self._orig_pathexists = os.path.exists
+
+        UserDialog.current_expression = MagicMock()
+        UserDialog.current_expression.import_from_xml.return_value = None
+        UserDialog.current_expression.export_to_xml.return_value = None
+        os.path.exists = Mock(True)
+        self.export_path = Path('/my/path/not/exists')
+
+    def test_calls_correct_method(self):
+        with patch("parsing.postfix_expression.PostfixExpression.import_from_xml", mock.Mock()) as m:
+            UserDialog.change_current_expression_through_xml(self.export_path)
+            m.assert_called_once_with(self.export_path)
 
 
 class TestInteractiveMenu(unittest.TestCase):
