@@ -28,11 +28,11 @@ class PostfixMock():
     def show_solving_history(self):
         return "history"
 
-    def import_from_xml(self, xml_path):
+    @staticmethod
+    def import_from_xml(xml_path):
         if xml_path == "xml":
             raise ValueError
-        print("import mock")
-        return None
+        return PostfixMock(exp="2+3")
 
 
 class TestMainHelp(unittest.TestCase):
@@ -127,21 +127,13 @@ class TestAutomaticMenu(unittest.TestCase):
 
 class TestChangeCurrentExpressionXML(unittest.TestCase):
 
-    def test_manual_interaction(self):
-        # SE CICLEAZA
-        pass
-        # UserDialog.current_expression = PostfixMock()
-        # with mock.patch('sys.stdout', new=io.StringIO()) as fake_stdout:
-        #     original_input = mock.builtins.input
-        #     mock.builtins.input = lambda _: "4"
-        #
-        #     UserDialog.interactive_menu()
-        #
-        # target = "Enter a big number expression!\nBuilding expression . . .\nValidating expression . . .\n"
-        #
-        # self.assertEqual(fake_stdout.getvalue(), target, msg="test_manual_interaction failed")
-        # UserDialog.current_expression = None
-
+    def test_change_expression(self):
+        print("GOING TO TEST THAT THING NOW")
+        UserDialog.current_expression = PostfixMock("2+2")
+        with patch("parsing.postfix_expression.PostfixExpression", PostfixMock):
+            UserDialog.change_current_expression_through_xml("none")
+        self.assertEqual(UserDialog.current_expression.expression_string, "2+3", msg="test_change_expression failed")
+        UserDialog.current_expression = None
 
 class TestExportCurrentExpressionSML(unittest.TestCase):
     def setUp(self) -> None:
