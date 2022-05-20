@@ -2,10 +2,10 @@ import unittest
 
 import coverage
 
-from testing.big_numbers_tests import TEST_CASES as BIG_NUMBER_TEST_CASES
-from testing.parsing_tests import TEST_CASES as PARSING_TEST_CASES
-from testing.user_dialog_tests import TEST_CASES as DIALOG_TEST_CASES
-from testing.utils import get_test_suite
+from unit_testing.big_numbers_tests import TEST_CASES as BIG_NUMBER_TEST_CASES
+from unit_testing.parsing_tests import TEST_CASES as PARSING_TEST_CASES
+from unit_testing.user_dialog_tests import TEST_CASES as DIALOG_TEST_CASES
+from unit_testing.utils import get_test_suite
 
 
 def main():

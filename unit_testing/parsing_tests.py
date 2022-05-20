@@ -3,7 +3,7 @@ from parsing.postfix_expression import main as main_parsing_example, PostfixExpr
 from parsing import errors as perrors
 from big_numbers import errors as berrors
 from big_numbers.big_number import BigNumber
-from testing.utils import get_test_suite
+from unit_testing.utils import get_test_suite
 from unittest.mock import MagicMock, Mock, patch
 from pathlib import Path
 import os

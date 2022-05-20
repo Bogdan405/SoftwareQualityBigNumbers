@@ -1,7 +1,7 @@
 import unittest
 from big_numbers import errors
 from big_numbers.big_number import BigNumber
-from testing.utils import get_test_suite
+from unit_testing.utils import get_test_suite
 
 
 class TestBigNumberInit(unittest.TestCase):
