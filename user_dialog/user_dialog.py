@@ -62,12 +62,14 @@ class UserDialog:
             for item in valid_user_inputs:
                 print(item)
             user_input = input("input: ")
-
+        assert user_input in valid_user_inputs
         match user_input:
             case "import":
                 cls.change_current_expression_through_xml(file_path)
             case "export":
                 cls.export_current_expression_to_xml(file_path)
+
+        assert user_input == "back"
 
     @classmethod
     def change_current_expression_through_xml(cls, xml_path: Path):
@@ -108,8 +110,14 @@ class UserDialog:
             except:
                 print("Invalid integer value")
         PostfixExpression.max_number_size = user_input
+        assert type(PostfixExpression.max_number_size) == int
+        assert PostfixExpression.max_number_size > 1
         if cls.current_expression:
             cls.current_expression.max_number_size = user_input
+
+        assert type(cls.current_expression.max_number_size) == int
+        assert cls.current_expression.max_number_size > 1
+
 
     @classmethod
     def modify_verbosity(cls):
