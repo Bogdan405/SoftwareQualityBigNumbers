@@ -72,6 +72,7 @@ class UserDialog:
     @classmethod
     def change_current_expression_through_xml(cls, xml_path: Path):
         try:
+            assert len(xml_path)>1, "xml path too short"
             cls.current_expression = PostfixExpression.import_from_xml(xml_path)
         except Exception as e:
             print(e)
