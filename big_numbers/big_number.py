@@ -7,12 +7,15 @@ class BigNumber:
         self.validate_big_number_string(big_number_string, max_size)
         self.big_number_array = [int(c) for c in reversed(big_number_string)]
         self.max_size = max_size
+        assert len(self.big_number_array) < self.max_size, "Maximum size has been reached"
 
     @property
     def value(self):
         return "".join([str(x) for x in reversed(self.big_number_array)])
 
     def __eq__(self, other):
+        assert len(self.big_number_array) > 0, "equal operation on len 0 first operand"
+        assert len(other.big_number_array) > 0, "equal operation on len 0 second operand"
         if len(self.big_number_array) != len(other.big_number_array):
             return False
         for index in range(len(self.big_number_array)):
@@ -31,6 +34,7 @@ class BigNumber:
                 return False
             if self.big_number_array[index] < other.big_number_array[index]:
                 return True
+        assert len(self.big_number_array) == len(other.big_number_array), "_le_ with different length numbers defaulted the return"
         return True
 
     def __lt__(self, other):
@@ -44,6 +48,7 @@ class BigNumber:
                 return False
             if self.big_number_array[index] < other.big_number_array[index]:
                 return True
+        assert len(self.big_number_array) == len(other.big_number_array), "_lt_ with different length numbers defaulted the return"
         return False
 
     def __hash__(self):
@@ -80,8 +85,10 @@ class BigNumber:
                 result[index] += b[index]
             carry = result[index] // 10
             result[index] = result[index] % 10
+            assert len(result.value) < result.max_size, "sum size overflow"
 
         if carry:
+            assert carry != 0 , "carry 0 is being appended"
             result.big_number_array.append(carry)
 
         if result.max_size < len(result.big_number_array):
@@ -109,7 +116,7 @@ class BigNumber:
 
         while not result[-1] and len(result.big_number_array) > 1:
             result.big_number_array = result[:-1]
-
+        assert len(result.big_number_array) > 0 , "0 len result in sub operation"
         return result
 
     def __mul__(self, other: "BigNumber"):
@@ -118,6 +125,7 @@ class BigNumber:
         result = BigNumber("0", self.max_size)
         while b.value != "0":
             result = result + self
+            assert len(result.value)<result.max_size, "mul size overflow in addition loop"
             b = b - one
         return result
 
@@ -136,7 +144,7 @@ class BigNumber:
             except errors.NegativeResult:
                 break
             result = result + one
-
+        assert len(result.big_number_array) < result.max_size, "div size lost"
         return result
 
     def __pow__(self, power: "BigNumber", modulo=None):
@@ -192,7 +200,6 @@ class BigNumber:
         for c in big_number_string:
             if c not in valid_characters:
                 raise errors.InvalidCharInNumberString(c)
-
         if len(big_number_string) > max_size:
             raise errors.NumberSizeGreaterThanLimit(big_number_string, max_size)
 
@@ -208,7 +215,7 @@ def main():
     print(x < y)
     print(x == x)
     print(x + BigNumber("0", 30))
-    print(x.root())
+    # print(x.root(2))
 
 
 if __name__ == '__main__':
